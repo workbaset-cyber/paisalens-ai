@@ -112,16 +112,93 @@
         </article>
       </section>
 
-      <section class="page" id="page-insights">
-        <div class="welcome-row"><div><h2>Understand your patterns.</h2><p>Get clear, educational suggestions based on the expenses you entered.</p></div></div>
-        <article class="panel ai-panel">
-          <div class="ai-heading"><span class="ai-orb">✦</span><div><h3>PaisaLens Smart Assistant</h3><p>Spending insights based on your saved entries</p></div></div>
-          <div id="insightCards" class="insight-cards"></div>
-          <div class="notice">This demo provides budgeting education, not professional financial advice. Your entries stay in this browser. Do not enter bank details, passwords or other sensitive information.</div>
-          <button class="primary-btn" id="refreshInsights">Refresh insights</button>
-        </article>
-      </section>
+      
+<section class="page" id="page-insights">
+  <div class="welcome-row">
+    <div>
+      <h2>Understand your patterns.</h2>
+      <p>Explore your spending and learn about budgeting.</p>
+    </div>
+  </div>
 
+  <!-- Expense Analyzer -->
+  <article class="panel ai-panel">
+    <div class="ai-heading">
+      <span class="ai-orb">✦</span>
+      <div>
+        <h3>Expense Analyzer</h3>
+        <p>Analysis of your saved expenses</p>
+      </div>
+    </div>
+
+    <button class="primary-btn" id="analyzeExpenses">
+      Analyse my expenses
+    </button>
+
+    <div id="analysisOutput" class="insight-cards">
+      <p>Add expenses and tap Analyse to get started.</p>
+    </div>
+  </article>
+
+  <!-- Existing Smart Insights -->
+  <article class="panel ai-panel">
+    <div class="ai-heading">
+      <span class="ai-orb">✦</span>
+      <div>
+        <h3>Smart Budget Insights</h3>
+        <p>Simple observations from your spending records</p>
+      </div>
+    </div>
+
+    <div id="insightCards" class="insight-cards"></div>
+
+    <button class="outline-btn" id="refreshInsights">
+      Refresh insights
+    </button>
+  </article>
+
+  <!-- Chatbot -->
+  <article class="panel ai-panel">
+    <div class="ai-heading">
+      <span class="ai-orb">✦</span>
+      <div>
+        <h3>PaisaLens Chat</h3>
+        <p>Ask questions about budgeting and saving</p>
+      </div>
+    </div>
+
+    <div id="chatMessages" class="chat-messages">
+      <div class="chat-message bot-message">
+        Hello! Ask me a question about budgeting,
+        expenses or saving money.
+      </div>
+    </div>
+
+    <form id="chatForm" class="chat-form">
+      <input
+        id="chatInput"
+        type="text"
+        placeholder="Ask a budgeting question..."
+        maxlength="300"
+        required
+      >
+      <button class="primary-btn" type="submit">
+        Send
+      </button>
+    </form>
+
+    <p id="chatStatus" class="notice">
+      PaisaLens Smart Assistant uses your recorded expense data
+and budgeting rules to provide educational guidance.
+    </p>
+  </article>
+
+  <div class="notice">
+    This project provides educational budgeting information,
+    not professional financial advice. Avoid entering sensitive
+    personal or banking information.
+  </div>
+</section>
       <footer class="app-footer">PaisaLens AI · Built for learning · Demo data stays on this device</footer>
     </main>
   </div>

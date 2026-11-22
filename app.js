@@ -146,3 +146,111 @@ $("sampleBtn").addEventListener("click", () => {
 });
 $("refreshInsights").addEventListener("click", renderInsights);
 render();
+
+// PAISALENS EXPENSE ANALYZER
+$("analyzeExpenses").addEventListener("click", () => {
+  const output = $("analysisOutput");
+
+  if (state.expenses.length === 0) {
+    output.innerHTML = "<p>Please add expenses before analysing.</p>";
+    return;
+  }
+
+  const totals = categoryTotals();
+  const spent = totalSpent();
+  const remaining = state.budget - spent;
+
+  const largest = Object.entries(totals)
+    .sort((a, b) => b[1] - a[1])[0];
+
+  const percentage = Math.round(
+    (spent / state.budget) * 100
+  );
+
+  const results = [
+    {
+      title: "Total spending",
+      text: `You have recorded ₹${spent.toLocaleString("en-IN")} in expenses.`
+    },
+    {
+      title: "Largest category",
+      text: `${largest[0]} accounts for ₹${largest[1].toLocaleString("en-IN")} of your spending.`
+    },
+    {
+      title: "Budget status",
+      text: remaining >= 0
+        ? `You have ₹${remaining.toLocaleString("en-IN")} remaining (${percentage}% of your budget used).`
+        : `You are ₹${Math.abs(remaining).toLocaleString("en-IN")} over your planned budget.`
+    }
+  ];
+
+  output.innerHTML = results.map(item => `
+    <div class="insight-card">
+      <b>✦ ${safeText(item.title)}</b>
+      <p>${safeText(item.text)}</p>
+    </div>
+  `).join("");
+});
+
+
+// PAISALENS SMART BUDGETING CHATBOT
+$("chatForm").addEventListener("submit", event => {
+  event.preventDefault();
+
+  const input = $("chatInput");
+  const messages = $("chatMessages");
+  const question = input.value.trim().toLowerCase();
+
+  if (!question) return;
+
+  function addMessage(text, type) {
+    const message = document.createElement("div");
+    message.className = `chat-message ${type}-message`;
+    message.textContent = text;
+    messages.appendChild(message);
+  }
+
+  addMessage(input.value.trim(), "user");
+
+  const spent = totalSpent();
+  const remaining = state.budget - spent;
+  const totals = categoryTotals();
+
+  const largest = Object.entries(totals)
+    .sort((a, b) => b[1] - a[1])[0];
+
+  let reply;
+
+  if (question.includes("hello") || question.includes("hi")) {
+    reply = "Hello! I'm PaisaLens Smart Assistant. Ask me about your budget, expenses or savings.";
+
+  } else if (question.includes("total") || question.includes("spent")) {
+    reply = `Your recorded total spending is ₹${spent.toLocaleString("en-IN")}. Your planned budget is ₹${state.budget.toLocaleString("en-IN")}.`;
+
+  } else if (question.includes("budget") || question.includes("remaining") || question.includes("left")) {
+    reply = remaining >= 0
+      ? `You have ₹${remaining.toLocaleString("en-IN")} remaining from your planned budget. Keep tracking your expenses.`
+      : `You are ₹${Math.abs(remaining).toLocaleString("en-IN")} over your planned budget. Review your recorded expenses and adjust your plan if needed.`;
+
+  } else if (question.includes("category") || question.includes("highest") || question.includes("most")) {
+    reply = spent > 0
+      ? `${largest[0]} is your largest recorded spending category, with ₹${largest[1].toLocaleString("en-IN")}.`
+      : "Add some expenses first so I can identify your largest spending category.";
+
+  } else if (question.includes("save") || question.includes("saving")) {
+    reply = "Try recording your daily expenses, setting a realistic savings goal and reviewing your largest spending categories regularly.";
+
+  } else if (question.includes("analyse") || question.includes("analysis") || question.includes("analyze")) {
+    reply = `Your spending summary: Total spent ₹${spent.toLocaleString("en-IN")}. Largest category: ${largest[0]}. Remaining budget: ₹${remaining.toLocaleString("en-IN")}.`;
+
+  } else if (question.includes("expense") || question.includes("spending")) {
+    reply = `You have recorded ${state.expenses.length} expenses. Your total is ₹${spent.toLocaleString("en-IN")}.`;
+
+  } else {
+    reply = "I can help you understand your total spending, remaining budget, largest expense category and savings habits. Try asking: How much have I spent? or Where do I spend the most?";
+  }
+
+  addMessage(reply, "bot");
+  input.value = "";
+  messages.scrollTop = messages.scrollHeight;
+});
