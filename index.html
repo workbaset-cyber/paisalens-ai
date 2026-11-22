@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PaisaLens AI | Student Finance Assistant</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" data-page="dashboard"><span class="brand-mark">₹</span><span>PaisaLens <b>AI</b></span></a>
+      <p class="nav-label">WORKSPACE</p>
+      <button class="nav-link active" data-page="dashboard">▦ <span>Dashboard</span></button>
+      <button class="nav-link" data-page="expenses">↕ <span>Expenses</span></button>
+      <button class="nav-link" data-page="budget">◎ <span>Budget planner</span></button>
+      <button class="nav-link" data-page="insights">✦ <span>AI insights</span></button>
+      <div class="sidebar-note">
+        <div class="note-icon">✦</div>
+        <b>Small steps add up.</b>
+        <p>Understand your spending and plan with confidence.</p>
+      </div>
+      <p class="sidebar-foot">PaisaLens AI · Demo project</p>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+        <div><span class="eyebrow">STUDENT FINANCE SPACE</span><h1 id="pageTitle">Dashboard</h1></div>
+        <div class="profile"><span class="avatar">S</span><span>Student</span></div>
+      </header>
+
+      <section class="page active" id="page-dashboard">
+        <div class="welcome-row">
+          <div><h2>Your money, made clearer.</h2><p>Here is your financial snapshot. Update it as you add expenses.</p></div>
+          <button class="primary-btn" data-go="expenses">＋ Add expense</button>
+        </div>
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-top"><span>Monthly budget</span><span class="stat-icon purple">◎</span></div><strong id="budgetStat">₹5,000</strong><small>Your planned limit</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Total spent</span><span class="stat-icon pink">↗</span></div><strong id="spentStat">₹0</strong><small id="spentCaption">0% of your budget used</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Remaining</span><span class="stat-icon green">✓</span></div><strong id="remainingStat">₹5,000</strong><small>Budget left this month</small></article>
+        </div>
+        <div class="content-grid">
+          <article class="panel chart-panel">
+            <div class="panel-heading"><div><h3>Spending overview</h3><p>Expenses by category</p></div><span class="soft-tag">This month</span></div>
+            <div class="chart-wrap"><canvas id="spendingChart" aria-label="Spending by category chart"></canvas><p id="emptyChart" class="empty-chart">Add an expense to see your chart.</p></div>
+          </article>
+          <article class="panel insight-preview">
+            <div class="panel-heading"><div><h3>Smart insight</h3><p>A quick look at your spending</p></div><span class="sparkle">✦</span></div>
+            <p id="dashboardInsight" class="insight-text">Add a few expenses and PaisaLens will help you understand your spending.</p>
+            <button class="text-btn" data-go="insights">View insights →</button>
+          </article>
+        </div>
+        <article class="panel">
+          <div class="panel-heading"><div><h3>Recent transactions</h3><p>Your latest entries</p></div><button class="text-btn" data-go="expenses">View all →</button></div>
+          <div class="table-scroll"><table><thead><tr><th>Expense</th><th>Category</th><th>Date</th><th class="right">Amount</th></tr></thead><tbody id="recentRows"></tbody></table></div>
+          <p id="recentEmpty" class="empty-state">No expenses yet. Add your first expense to get started.</p>
+        </article>
+      </section>
+
+      <section class="page" id="page-expenses">
+        <div class="welcome-row"><div><h2>Track where it goes.</h2><p>Add everyday expenses. Use sample data to try the demo.</p></div><button class="outline-btn" id="sampleBtn">＋ Load sample data</button></div>
+        <div class="two-column">
+          <article class="panel">
+            <div class="panel-heading"><div><h3>Add an expense</h3><p>Enter a purchase or payment</p></div></div>
+            <form id="expenseForm" class="form-grid">
+              <label>Expense name<input id="expenseName" type="text" placeholder="e.g. Lunch" maxlength="45" required></label>
+              <label>Amount (₹)<input id="expenseAmount" type="number" min="1" max="1000000" step="1" placeholder="150" required></label>
+              <label>Category<select id="expenseCategory"><option>Food</option><option>Travel</option><option>Education</option><option>Shopping</option><option>Other</option></select></label>
+              <label>Date<input id="expenseDate" type="date" required></label>
+              <button class="primary-btn full-width" type="submit">Save expense</button>
+            </form>
+          </article>
+          <article class="panel">
+            <div class="panel-heading"><div><h3>Spending categories</h3><p>Totals update automatically</p></div></div>
+            <div id="categorySummary" class="category-list"></div>
+          </article>
+        </div>
+        <article class="panel">
+          <div class="panel-heading"><div><h3>All expenses</h3><p>Remove an entry with the delete button</p></div><span class="soft-tag" id="expenseCount">0 entries</span></div>
+          <div class="table-scroll"><table><thead><tr><th>Expense</th><th>Category</th><th>Date</th><th class="right">Amount</th><th></th></tr></thead><tbody id="expenseRows"></tbody></table></div>
+          <p id="expenseEmpty" class="empty-state">Your expense list is empty.</p>
+        </article>
+      </section>
+
+      <section class="page" id="page-budget">
+        <div class="welcome-row"><div><h2>Give your money a plan.</h2><p>Choose a monthly spending limit and track your progress.</p></div></div>
+        <div class="two-column">
+          <article class="panel">
+            <div class="panel-heading"><div><h3>Monthly budget</h3><p>Set a limit that suits your needs</p></div></div>
+            <form id="budgetForm" class="form-grid">
+              <label>Budget amount (₹)<input id="budgetInput" type="number" min="1" max="10000000" required></label>
+              <button class="primary-btn full-width" type="submit">Update budget</button>
+            </form>
+          </article>
+          <article class="panel budget-progress">
+            <span class="eyebrow">BUDGET PROGRESS</span><strong id="budgetProgressText">₹0 / ₹5,000</strong>
+            <div class="progress-track"><div id="budgetProgressBar" class="progress-bar"></div></div>
+            <p id="budgetMessage">You have not recorded any expenses yet.</p>
+          </article>
+        </div>
+        <article class="panel">
+          <div class="panel-heading"><div><h3>Savings goal</h3><p>Track a goal you are working towards</p></div></div>
+          <form id="goalForm" class="goal-form">
+            <label>Goal name<input id="goalName" type="text" maxlength="40" placeholder="e.g. New headphones" required></label>
+            <label>Target (₹)<input id="goalTarget" type="number" min="1" max="10000000" required></label>
+            <label>Saved so far (₹)<input id="goalSaved" type="number" min="0" max="10000000" required></label>
+            <button class="primary-btn" type="submit">Save goal</button>
+          </form>
+          <div id="goalDisplay" class="goal-display empty-state">Create a savings goal to see your progress.</div>
+        </article>
+      </section>
+
+      <section class="page" id="page-insights">
+        <div class="welcome-row"><div><h2>Understand your patterns.</h2><p>Get clear, educational suggestions based on the expenses you entered.</p></div></div>
+        <article class="panel ai-panel">
+          <div class="ai-heading"><span class="ai-orb">✦</span><div><h3>PaisaLens Smart Assistant</h3><p>Spending insights based on your saved entries</p></div></div>
+          <div id="insightCards" class="insight-cards"></div>
+          <div class="notice">This demo provides budgeting education, not professional financial advice. Your entries stay in this browser. Do not enter bank details, passwords or other sensitive information.</div>
+          <button class="primary-btn" id="refreshInsights">Refresh insights</button>
+        </article>
+      </section>
+
+      <footer class="app-footer">PaisaLens AI · Built for learning · Demo data stays on this device</footer>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
